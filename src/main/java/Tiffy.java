@@ -59,6 +59,17 @@ public class Tiffy {
                 + "You have " + size + " tasks.");
     }
 
+    public static void deleteTask(List<Task> t, int index) throws TiffyException {
+        try {
+            String taskString = t.get(index - 1).toString();
+            t.remove(index - 1);
+            System.out.println("Noted. I've removed this task:\n"
+                    + taskString + "\nYou have " + t.size() + " tasks left.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new TiffyException("Invalid index!", TiffyException.ExceptionType.INVALID_INDEX, e);
+        }
+    }
+
     public static void handleRequests(String input, List<Task> tasks) throws TiffyException {
         String[] partition = input.split(" ");
         switch (partition[0]) {
@@ -71,21 +82,21 @@ public class Tiffy {
                 }
             }
             case "todo" -> {
-                String task = input.replaceFirst("todo", "");
+                String task = input.replaceFirst("todo ", "");
                 if (task.isBlank()) throw new TiffyException("Adding empty tasks to feel productive?", TiffyException.ExceptionType.EMPTY_TASK);
                 Todo td = new Todo(task);
                 tasks.add(td);
                 notifyTaskAdded(td, tasks.size());
             }
             case "deadline" -> {
-                String[] parts = input.replaceFirst("deadline", "").split(" /by ");
+                String[] parts = input.replaceFirst("deadline ", "").split(" /by ");
                 if (parts.length < 2 || parts[0].isBlank()) throw new TiffyException("I'm afraid that's an invalid request.", TiffyException.ExceptionType.INVALID_INPUT);
                 Deadline d = new Deadline(parts[0], parts[1]);
                 tasks.add(d);
                 notifyTaskAdded(d, tasks.size());
             }
             case "event" -> {
-                String[] parts = input.replaceFirst("event", "").split(" /from | /to ");
+                String[] parts = input.replaceFirst("event ", "").split(" /from | /to ");
                 if (parts.length < 3 || parts[0].isBlank()) throw new TiffyException("I'm afraid that's an invalid request.", TiffyException.ExceptionType.INVALID_INPUT);
                 Event e = new Event(parts[0], parts[1], parts[2]);
                 tasks.add(e);
@@ -103,6 +114,14 @@ public class Tiffy {
                 int index = Integer.parseInt(partition[1]);
                 try {
                     markDoneUndone(tasks, false, index);
+                } catch (TiffyException te) {
+                    System.out.println(te.toString());
+                }
+            }
+            case "delete" -> {
+                int index = Integer.parseInt(partition[1]);
+                try {
+                    deleteTask(tasks, index);
                 } catch (TiffyException te) {
                     System.out.println(te.toString());
                 }
