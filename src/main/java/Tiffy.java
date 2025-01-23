@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import main.java.*;
 import static java.lang.System.in;
 
 public class Tiffy {
@@ -23,20 +24,40 @@ public class Tiffy {
                 """);
         String bye = "Bye. Hope to see you again soon!";
         String input = s.nextLine();
-        List<String> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         while (!input.equals("bye")) {
-            switch (input) {
-                case "list":
+            String[] partition = input.split(" ");
+            switch (partition[0]) {
+                case "list" -> {
                     int counter = 1;
-                    for (String task : tasks) {
-                        System.out.println(counter + ": " + task);
+                    for (Task t : tasks) {
+                        System.out.println(counter + "." + t.toString());
                         counter++;
                     }
-                    break;
-                default:
+                }
+                case "mark" -> {
+                    try {
+                        tasks.get(Integer.parseInt(partition[1]) - 1).markDone();
+                        System.out.println("Marked task:");
+                        System.out.println(tasks.get(Integer.parseInt(partition[1]) - 1).toString());
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Invalid index");
+                    }
+                }
+                case "unmark" -> {
+                    try {
+                        tasks.get(Integer.parseInt(partition[1]) - 1).unmarkDone();
+                        System.out.println("Unmarked task:");
+                        System.out.println(tasks.get(Integer.parseInt(partition[1]) - 1).toString());
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Invalid index");
+                    }
+                }
+                default -> {
+                    Task t = new Task(input);
                     System.out.println("added: " + input);
-                    tasks.add(input);
-                    break;
+                    tasks.add(t);
+                }
             }
             input = s.nextLine();
         }
