@@ -1,12 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import static java.lang.System.in;
 import main.java.*;
+import static java.lang.System.in;
 
 public class Tiffy {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TiffyException {
         Scanner s = new Scanner(in);
         String asciiArt = """
                  ___________  __     _______   _______  ___  ___\s
@@ -28,21 +27,29 @@ public class Tiffy {
         List<Task> tasks = new ArrayList<>();
         String input = s.nextLine();
         while (!input.equals("bye")) {
-            handleRequests(input, tasks);
+            try {
+                handleRequests(input, tasks);
+            } catch (TiffyException te) {
+                System.out.println(te.toString());
+            }
             input = s.nextLine();
         }
         System.out.println(bye);
     }
 
-    public static void markDoneUndone(List<Task> tasks, boolean mark, int index) {
-        Task temp = tasks.get(index - 1);
-        if (temp.getStatusIcon().equals(mark ? "X" : " ")) {
-            System.out.println(mark ? "Task already marked!" : "Task has not been marked!");
-        } else {
-            if (mark) temp.markDone();
-            else temp.unmarkDone();
-            System.out.println("Task has been marked as " + (mark ? "done." : "not done: "));
-            System.out.println(temp.toString());
+    public static void markDoneUndone(List<Task> tasks, boolean mark, int index) throws TiffyException {
+        try {
+            Task temp = tasks.get(index - 1);
+            if (temp.getStatusIcon().equals(mark ? "X" : " ")) {
+                System.out.println(mark ? "Task already marked!" : "Task has not been marked!");
+            } else {
+                if (mark) temp.markDone();
+                else temp.unmarkDone();
+                System.out.println("Task has been marked as " + (mark ? "done." : "not done: "));
+                System.out.println(temp.toString());
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new TiffyException("Invalid index!", TiffyException.ExceptionType.INVALID_INDEX, e);
         }
     }
 
@@ -52,10 +59,11 @@ public class Tiffy {
                 + "You have " + size + " tasks.");
     }
 
-    public static void handleRequests(String input, List<Task> tasks) {
+    public static void handleRequests(String input, List<Task> tasks) throws TiffyException {
         String[] partition = input.split(" ");
         switch (partition[0]) {
             case "list" -> {
+                if (tasks.isEmpty()) throw new TiffyException("You have no tasks! Add some.", TiffyException.ExceptionType.ZERO_TASK);
                 int count = 1;
                 for (Task t : tasks) {
                     System.out.println(count + "." + t.toString());
@@ -63,33 +71,44 @@ public class Tiffy {
                 }
             }
             case "todo" -> {
-                String task = input.replaceFirst("todo ", "");
+                String task = input.replaceFirst("todo", "");
+                if (task.isBlank()) throw new TiffyException("Adding empty tasks to feel productive?", TiffyException.ExceptionType.EMPTY_TASK);
                 Todo td = new Todo(task);
                 tasks.add(td);
                 notifyTaskAdded(td, tasks.size());
             }
             case "deadline" -> {
-                String[] parts = input.replaceFirst("deadline ", "").split(" /by ");
+                String[] parts = input.replaceFirst("deadline", "").split(" /by ");
+                if (parts.length < 2 || parts[0].isBlank()) throw new TiffyException("I'm afraid that's an invalid request.", TiffyException.ExceptionType.INVALID_INPUT);
                 Deadline d = new Deadline(parts[0], parts[1]);
                 tasks.add(d);
                 notifyTaskAdded(d, tasks.size());
             }
             case "event" -> {
-                String[] parts = input.replaceFirst("event ", "").split(" /from | /to ");
+                String[] parts = input.replaceFirst("event", "").split(" /from | /to ");
+                if (parts.length < 3 || parts[0].isBlank()) throw new TiffyException("I'm afraid that's an invalid request.", TiffyException.ExceptionType.INVALID_INPUT);
                 Event e = new Event(parts[0], parts[1], parts[2]);
                 tasks.add(e);
                 notifyTaskAdded(e, tasks.size());
             }
             case "mark" -> {
                 int index = Integer.parseInt(partition[1]);
-                markDoneUndone(tasks, true, index);
+                try {
+                    markDoneUndone(tasks, true, index);
+                } catch (TiffyException te) {
+                    System.out.println(te.toString());
+                }
             }
             case "unmark" -> {
                 int index = Integer.parseInt(partition[1]);
-                markDoneUndone(tasks, false, index);
+                try {
+                    markDoneUndone(tasks, false, index);
+                } catch (TiffyException te) {
+                    System.out.println(te.toString());
+                }
             }
             default -> {
-                System.out.println("Invalid command!");
+                throw new TiffyException("I'm afraid that's an invalid request.", TiffyException.ExceptionType.INVALID_INPUT);
             }
         }
     }
