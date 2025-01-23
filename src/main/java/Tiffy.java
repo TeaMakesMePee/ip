@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import static java.lang.System.in;
 
@@ -21,8 +23,21 @@ public class Tiffy {
                 """);
         String bye = "Bye. Hope to see you again soon!";
         String input = s.nextLine();
+        List<String> tasks = new ArrayList<>();
         while (!input.equals("bye")) {
-            System.out.println(input);
+            switch (input) {
+                case "list":
+                    int counter = 1;
+                    for (String task : tasks) {
+                        System.out.println(counter + ": " + task);
+                        counter++;
+                    }
+                    break;
+                default:
+                    System.out.println("added: " + input);
+                    tasks.add(input);
+                    break;
+            }
             input = s.nextLine();
         }
         System.out.println(bye);
