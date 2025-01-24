@@ -1,3 +1,7 @@
+package task;
+import exception.TiffyException;
+import manager.UiManager;
+
 public abstract class Task {
     protected String description;
     protected boolean isDone;
@@ -20,7 +24,7 @@ public abstract class Task {
 
     public void markDone(boolean done) throws TiffyException {
         if (this.isDone == done) {
-            throw new TiffyException(done ? "Task already marked!" : "Task already marked not done!",
+            throw new TiffyException(done ? "task.Task already marked!" : "task.Task already marked not done!",
                     done ? TiffyException.ExceptionType.ALREADY_MARKED : TiffyException.ExceptionType.ALREADY_UNMARKED);
         }
         this.isDone = done;

@@ -1,3 +1,5 @@
+package manager;
+
 import static java.lang.System.in;
 import java.util.Scanner;
 import java.util.List;
@@ -52,19 +54,19 @@ public class UiManager {
         return scanner.nextLine();
     }
 
-    public void printEventFeedback(Task task, eventType type) {
+    public void printEventFeedback(task.Task task, eventType type) {
         switch (type) {
             case TASK_MARKED -> {
-                System.out.println("Task marked as done:");
+                System.out.println("task.Task marked as done:");
             }
             case TASK_UNMARKED -> {
-                System.out.println("Task marked as undone:");
+                System.out.println("task.Task marked as undone:");
             }
             case TASK_ADDED -> {
-                System.out.println("Task added:");
+                System.out.println("task.Task added:");
             }
             case TASK_DELETED -> {
-                System.out.println("Task deleted:");
+                System.out.println("task.Task deleted:");
             }
         }
         System.out.println(task.toString());
@@ -74,9 +76,9 @@ public class UiManager {
         System.out.println("You have " + size + " tasks.");
     }
 
-    public void printTasks(List<Task> tasks) {
+    public void printTasks(List<task.Task> tasks) {
         int count = 1;
-        for (Task task : tasks) {
+        for (task.Task task : tasks) {
             System.out.println(count + "." + task.toString());
             count++;
         }

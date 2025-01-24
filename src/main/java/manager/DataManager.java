@@ -1,3 +1,5 @@
+package manager;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.File;
@@ -28,10 +30,10 @@ public class DataManager {
         return DataManager.InstanceHolder.instance;
     }
 
-    public void saveTasksToFile(List<Task> taskList) {
+    public void saveTasksToFile(List<task.Task> taskList) {
         File file = new File(FILE_PATH);
         List<String> stringList = taskList.stream()
-                .map(Task::getFormattedTask)
+                .map(task.Task::getFormattedTask)
                 .collect(Collectors.toList());
         try {
             file.getParentFile().mkdirs();
