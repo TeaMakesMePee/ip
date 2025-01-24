@@ -5,7 +5,12 @@ import static java.lang.System.in;
 
 public class Tiffy {
     public static void main(String[] args) throws TiffyException {
-        Scanner s = new Scanner(in);
+        Scanner scanner = new Scanner(in);
+
+        DataManager dataManager = DataManager.getInstance();
+        List<String> taskStr = dataManager.loadTasksFromFile();
+        List<Task> tasks = createTasks(taskStr);
+
         String asciiArt = """
                  ___________  __     _______   _______  ___  ___\s
                 ("     _   ")|" \\   /"     "| /"     "||"  \\/"  |
@@ -15,7 +20,6 @@ public class Tiffy {
                     \\:  |    /\\  |\\(:  (     (:  (      /   /   \s
                      \\__|   (__\\_|_)\\__/      \\__/     |___/    \s
         """;
-
         System.out.println(asciiArt);
         System.out.println("""
                 Hi! I'm Tiffy.
@@ -23,15 +27,15 @@ public class Tiffy {
                 """);
         String bye = "Bye. Hope to see you again soon!";
 
-        List<Task> tasks = new ArrayList<>();
-        String input = s.nextLine();
+        String input = scanner.nextLine();
         while (!input.equals("bye")) {
             try {
                 handleRequests(input, tasks);
             } catch (TiffyException te) {
                 System.out.println(te.toString());
             }
-            input = s.nextLine();
+            dataManager.saveTasksToFile(tasks);
+            input = scanner.nextLine();
         }
         System.out.println(bye);
     }
@@ -47,7 +51,7 @@ public class Tiffy {
                 } else {
                     temp.unmarkDone();
                 }
-                System.out.println("Task has been marked as " + (mark ? "done." : "not done: "));
+                System.out.println("Task has been marked as " + (mark ? "done:" : "not done:"));
                 System.out.println(temp.toString());
             }
         } catch (IndexOutOfBoundsException e) {
@@ -147,5 +151,27 @@ public class Tiffy {
                         TiffyException.ExceptionType.INVALID_INPUT);
             }
         }
+    }
+
+    public static List<Task> createTasks(List<String> loadedData) {
+        List<Task> tasks = new ArrayList<>();
+        for (String s : loadedData) {
+            String[] parts = s.split("\\|");
+            switch (parts[0]) {
+                case "E" -> {
+                    Event e = new Event(parts[2], parts[1].equals("true"), parts[3], parts[4]);
+                    tasks.add(e);
+                }
+                case "D" -> {
+                    Deadline d = new Deadline(parts[2], parts[1].equals("true"), parts[3]);
+                    tasks.add(d);
+                }
+                case "T" -> {
+                    Todo t = new Todo(parts[2], parts[1].equals("true"));
+                    tasks.add(t);
+                }
+            }
+        }
+        return tasks;
     }
 }
