@@ -2,9 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import static java.lang.System.in;
+import java.time.LocalDate;
 
 public class Tiffy {
-    public static void main(String[] args) throws TiffyException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(in);
 
         DataManager dataManager = DataManager.getInstance();
@@ -32,7 +33,7 @@ public class Tiffy {
             try {
                 handleRequests(input, tasks);
             } catch (TiffyException te) {
-                System.out.println(te.toString());
+                System.err.println(te.toString());
             }
             dataManager.saveTasksToFile(tasks);
             input = scanner.nextLine();
@@ -108,7 +109,7 @@ public class Tiffy {
                     throw new TiffyException("I'm afraid that's an invalid request.",
                             TiffyException.ExceptionType.INVALID_INPUT);
                 }
-                Deadline d = new Deadline(parts[0], parts[1]);
+                Deadline d = new Deadline(parts[0], LocalDate.parse(parts[1]));
                 tasks.add(d);
                 notifyTaskAdded(d, tasks.size());
             }
@@ -118,7 +119,7 @@ public class Tiffy {
                     throw new TiffyException("I'm afraid that's an invalid request.",
                             TiffyException.ExceptionType.INVALID_INPUT);
                 }
-                Event e = new Event(parts[0], parts[1], parts[2]);
+                Event e = new Event(parts[0], LocalDate.parse(parts[1]), LocalDate.parse(parts[2]));
                 tasks.add(e);
                 notifyTaskAdded(e, tasks.size());
             }
@@ -127,7 +128,7 @@ public class Tiffy {
                 try {
                     markDoneUndone(tasks, true, index);
                 } catch (TiffyException te) {
-                    System.out.println(te.toString());
+                    System.err.println(te.toString());
                 }
             }
             case "unmark" -> {
@@ -135,7 +136,7 @@ public class Tiffy {
                 try {
                     markDoneUndone(tasks, false, index);
                 } catch (TiffyException te) {
-                    System.out.println(te.toString());
+                    System.err.println(te.toString());
                 }
             }
             case "delete" -> {
@@ -143,7 +144,7 @@ public class Tiffy {
                 try {
                     deleteTask(tasks, index);
                 } catch (TiffyException te) {
-                    System.out.println(te.toString());
+                    System.err.println(te.toString());
                 }
             }
             default -> {
@@ -159,12 +160,16 @@ public class Tiffy {
             String[] parts = s.split("\\|");
             switch (parts[0]) {
                 case "E" -> {
-                    Event e = new Event(parts[2], parts[1].equals("true"), parts[3], parts[4]);
+                    Event e = new Event(parts[2], parts[1].equals("true"), LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
                     tasks.add(e);
                 }
                 case "D" -> {
-                    Deadline d = new Deadline(parts[2], parts[1].equals("true"), parts[3]);
-                    tasks.add(d);
+                    try {
+                        Deadline d = new Deadline(parts[2], parts[1].equals("true"), LocalDate.parse(parts[3]));
+                        tasks.add(d);
+                    } catch (Exception e) {
+                        System.err.println("Error parsing date: " + e.getMessage());
+                    }
                 }
                 case "T" -> {
                     Todo t = new Todo(parts[2], parts[1].equals("true"));
