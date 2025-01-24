@@ -18,12 +18,14 @@ public abstract class Task {
         return (isDone ? "X" : " "); // mark done task with X
     }
 
-    public void markDone() {
-        this.isDone = true;
-    }
-
-    public void unmarkDone() {
-        this.isDone = false;
+    public void markDone(boolean done) throws TiffyException {
+        if (this.isDone == done) {
+            throw new TiffyException(done ? "Task already marked!" : "Task already marked not done!",
+                    done ? TiffyException.ExceptionType.ALREADY_MARKED : TiffyException.ExceptionType.ALREADY_UNMARKED);
+        }
+        this.isDone = done;
+        UiManager.getInstance().printEventFeedback(this,
+                done ? UiManager.eventType.TASK_MARKED : UiManager.eventType.TASK_UNMARKED);
     }
 
     public String getDescription() {

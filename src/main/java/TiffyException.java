@@ -3,7 +3,9 @@ public class TiffyException extends Exception{
         INVALID_INPUT,
         INVALID_INDEX,
         EMPTY_TASK,
-        ZERO_TASK
+        ZERO_TASK,
+        ALREADY_MARKED,
+        ALREADY_UNMARKED,
     }
 
     public TiffyException(String message, ExceptionType type) {

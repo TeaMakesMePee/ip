@@ -1,59 +1,33 @@
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import static java.lang.System.in;
 import java.time.LocalDate;
 
 public class Tiffy {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(in);
+        TaskManager taskManager = new TaskManager(DataManager.getInstance().loadTasksFromFile());
 
-        DataManager dataManager = DataManager.getInstance();
-        List<String> taskStr = dataManager.loadTasksFromFile();
-        List<Task> tasks = createTasks(taskStr);
+        Parser parser = new Parser();
 
-        String asciiArt = """
-                 ___________  __     _______   _______  ___  ___\s
-                ("     _   ")|" \\   /"     "| /"     "||"  \\/"  |
-                 )__/  \\\\__/ ||  | (: ______)(: ______) \\   \\  /\s
-                    \\\\_ /    |:  |  \\/    |   \\/    |    \\\\  \\/ \s
-                    |.  |    |.  |  // ___)   // ___)    /   /  \s
-                    \\:  |    /\\  |\\(:  (     (:  (      /   /   \s
-                     \\__|   (__\\_|_)\\__/      \\__/     |___/    \s
-        """;
-        System.out.println(asciiArt);
-        System.out.println("""
-                Hi! I'm Tiffy.
-                What can I do for you?
-                """);
-        String bye = "Bye. Hope to see you again soon!";
-
-        String input = scanner.nextLine();
+        UiManager.getInstance().printStartupMessage();
+        String input = UiManager.getInstance().readCommand();
         while (!input.equals("bye")) {
             try {
-                handleRequests(input, tasks);
+                handleRequests(parser, input, taskManager);
             } catch (TiffyException te) {
-                System.err.println(te.toString());
+                UiManager.getInstance().printException(te);
             }
-            dataManager.saveTasksToFile(tasks);
-            input = scanner.nextLine();
+            DataManager.getInstance().saveTasksToFile(taskManager.getTasks());
+            input = UiManager.getInstance().readCommand();
         }
-        System.out.println(bye);
+        UiManager.getInstance().printGoodbyeMessage();
     }
 
     public static void markDoneUndone(List<Task> tasks, boolean mark, int index) throws TiffyException {
         try {
             Task temp = tasks.get(index - 1);
-            if (temp.getStatusIcon().equals(mark ? "X" : " ")) {
-                System.out.println(mark ? "Task already marked!" : "Task has not been marked!");
-            } else {
-                if (mark) {
-                    temp.markDone();
-                } else {
-                    temp.unmarkDone();
-                }
-                System.out.println("Task has been marked as " + (mark ? "done:" : "not done:"));
-                System.out.println(temp.toString());
+            try {
+                temp.markDone(mark);
+            } catch (TiffyException te) {
+                UiManager.getInstance().printException(te);
             }
         } catch (IndexOutOfBoundsException e) {
             throw new TiffyException("Invalid index!",
@@ -61,122 +35,46 @@ public class Tiffy {
         }
     }
 
-    public static void notifyTaskAdded(Task t, int size) {
-        System.out.println("Task added:\n" +
-                t.toString() + "\n"
-                + "You have " + size + " tasks.");
-    }
-
-    public static void deleteTask(List<Task> t, int index) throws TiffyException {
-        try {
-            String taskString = t.get(index - 1).toString();
-            t.remove(index - 1);
-            System.out.println("Noted. I've removed this task:\n"
-                    + taskString + "\nYou have " + t.size() + " tasks left.");
-        } catch (IndexOutOfBoundsException e) {
-            throw new TiffyException("Invalid index!",
-                    TiffyException.ExceptionType.INVALID_INDEX, e);
-        }
-    }
-
-    public static void handleRequests(String input, List<Task> tasks) throws TiffyException {
-        String[] partition = input.split(" ");
+    public static void handleRequests(Parser p, String input, TaskManager tm) throws TiffyException {
+        String[] partition = p.handleRequests(input);
         switch (partition[0]) {
             case "list" -> {
-                if (tasks.isEmpty()) {
+                if (tm.getTasks().isEmpty()) {
                     throw new TiffyException("You have no tasks! Add some.",
                             TiffyException.ExceptionType.ZERO_TASK);
                 }
-                int count = 1;
-                for (Task t : tasks) {
-                    System.out.println(count + "." + t.toString());
-                    count++;
-                }
+                UiManager.getInstance().printTasks(tm.getTasks());
             }
             case "todo" -> {
-                String task = input.replaceFirst("todo ", "");
-                if (task.isBlank()) {
-                    throw new TiffyException("Adding empty tasks to feel productive?",
-                            TiffyException.ExceptionType.EMPTY_TASK);
-                }
-                Todo td = new Todo(task);
-                tasks.add(td);
-                notifyTaskAdded(td, tasks.size());
+                tm.addTask(new Todo(partition[1]));
             }
             case "deadline" -> {
-                String[] parts = input.replaceFirst("deadline ", "").split(" /by ");
-                if (parts.length < 2 || parts[0].isBlank()) {
-                    throw new TiffyException("I'm afraid that's an invalid request.",
-                            TiffyException.ExceptionType.INVALID_INPUT);
-                }
-                Deadline d = new Deadline(parts[0], LocalDate.parse(parts[1]));
-                tasks.add(d);
-                notifyTaskAdded(d, tasks.size());
+                tm.addTask(new Deadline(partition[1], LocalDate.parse(partition[2])));
             }
             case "event" -> {
-                String[] parts = input.replaceFirst("event ", "").split(" /from | /to ");
-                if (parts.length < 3 || parts[0].isBlank()) {
-                    throw new TiffyException("I'm afraid that's an invalid request.",
-                            TiffyException.ExceptionType.INVALID_INPUT);
-                }
-                Event e = new Event(parts[0], LocalDate.parse(parts[1]), LocalDate.parse(parts[2]));
-                tasks.add(e);
-                notifyTaskAdded(e, tasks.size());
+                tm.addTask(new Event(partition[1], LocalDate.parse(partition[2]), LocalDate.parse(partition[3])));
             }
             case "mark" -> {
-                int index = Integer.parseInt(partition[1]);
                 try {
-                    markDoneUndone(tasks, true, index);
+                    markDoneUndone(tm.getTasks(), true, Integer.parseInt(partition[1]));
                 } catch (TiffyException te) {
-                    System.err.println(te.toString());
+                    UiManager.getInstance().printException(te);
                 }
             }
             case "unmark" -> {
-                int index = Integer.parseInt(partition[1]);
                 try {
-                    markDoneUndone(tasks, false, index);
+                    markDoneUndone(tm.getTasks(), false, Integer.parseInt(partition[1]));
                 } catch (TiffyException te) {
-                    System.err.println(te.toString());
+                    UiManager.getInstance().printException(te);
                 }
             }
             case "delete" -> {
-                int index = Integer.parseInt(partition[1]);
                 try {
-                    deleteTask(tasks, index);
+                    tm.deleteTask(Integer.parseInt(partition[1]) - 1);
                 } catch (TiffyException te) {
-                    System.err.println(te.toString());
-                }
-            }
-            default -> {
-                throw new TiffyException("I'm afraid that's an invalid request.",
-                        TiffyException.ExceptionType.INVALID_INPUT);
-            }
-        }
-    }
-
-    public static List<Task> createTasks(List<String> loadedData) {
-        List<Task> tasks = new ArrayList<>();
-        for (String s : loadedData) {
-            String[] parts = s.split("\\|");
-            switch (parts[0]) {
-                case "E" -> {
-                    Event e = new Event(parts[2], parts[1].equals("true"), LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
-                    tasks.add(e);
-                }
-                case "D" -> {
-                    try {
-                        Deadline d = new Deadline(parts[2], parts[1].equals("true"), LocalDate.parse(parts[3]));
-                        tasks.add(d);
-                    } catch (Exception e) {
-                        System.err.println("Error parsing date: " + e.getMessage());
-                    }
-                }
-                case "T" -> {
-                    Todo t = new Todo(parts[2], parts[1].equals("true"));
-                    tasks.add(t);
+                    UiManager.getInstance().printException(te);
                 }
             }
         }
-        return tasks;
     }
 }
