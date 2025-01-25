@@ -3,6 +3,8 @@ package manager;
 import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
+import task.Task;
+
 public class TaskManager {
     private final List<task.Task> tasks;
 
@@ -50,5 +52,18 @@ public class TaskManager {
 
     public List<task.Task> getTasks() {
         return Collections.unmodifiableList(this.tasks);
+    }
+
+    public List<Task> findTasks(String keyword) throws exception.TiffyException {
+        List<Task> temp = this.tasks.stream()
+                .filter(x -> x.getDescription()
+                        .contains(keyword))
+                .toList();
+        if (temp.isEmpty()) {
+            throw new exception.TiffyException("Task you're looking for is not found.",
+                    exception.TiffyException.ExceptionType.TASK_NOT_FOUND);
+        }
+        UiManager.getInstance().notifyTaskFound();
+        return temp;
     }
 }

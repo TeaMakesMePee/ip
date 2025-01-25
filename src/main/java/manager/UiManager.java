@@ -72,6 +72,10 @@ public class UiManager {
         System.out.println(task.toString());
     }
 
+    public void notifyTaskFound() {
+        System.out.println("Task(s) we found with your query:");
+    }
+
     public void printTaskCount(int size) {
         System.out.println("You have " + size + " tasks.");
     }

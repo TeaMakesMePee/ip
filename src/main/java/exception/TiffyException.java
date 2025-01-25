@@ -8,6 +8,7 @@ public class TiffyException extends Exception{
         ZERO_TASK,
         ALREADY_MARKED,
         ALREADY_UNMARKED,
+        TASK_NOT_FOUND,
     }
 
     public TiffyException(String message, ExceptionType type) {
