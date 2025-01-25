@@ -3,52 +3,83 @@ package manager;
 import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
-public class TaskManager {
-    private final List<task.Task> tasks;
+import exception.TiffyException;
+import task.*;
 
+/**
+ * Manages a collection of tasks, including adding, deleting, and retrieving tasks.
+ */
+public class TaskManager {
+
+    /** List of tasks managed by this TaskManager. */
+    private final List<Task> tasks;
+
+    /**
+     * Constructs a TaskManager with tasks initialized from serialized data.
+     *
+     * @param taskData List of serialized task data strings.
+     */
     public TaskManager(List<String> taskData) {
         this.tasks = new ArrayList<>();
         for (String s : taskData) {
             String[] parts = s.split("\\|");
             switch (parts[0]) {
                 case "E" -> {
-                    task.Event e = new task.Event(parts[2], parts[1].equals("true"), java.time.LocalDate.parse(parts[3]), java.time.LocalDate.parse(parts[4]));
+                    Event e = new Event(parts[2], parts[1].equals("true"),
+                            java.time.LocalDate.parse(parts[3]), java.time.LocalDate.parse(parts[4]));
                     this.tasks.add(e);
                 }
                 case "D" -> {
                     try {
-                        task.Deadline d = new task.Deadline(parts[2], parts[1].equals("true"), java.time.LocalDate.parse(parts[3]));
+                        Deadline d = new Deadline(parts[2], parts[1].equals("true"),
+                                java.time.LocalDate.parse(parts[3]));
                         this.tasks.add(d);
                     } catch (Exception e) {
                         UiManager.getInstance().printException(e);
                     }
                 }
                 case "T" -> {
-                    task.Todo t = new task.Todo(parts[2], parts[1].equals("true"));
+                    Todo t = new Todo(parts[2], parts[1].equals("true"));
                     this.tasks.add(t);
                 }
             }
         }
     }
 
-    public void deleteTask(int index) throws exception.TiffyException {
+    /**
+     * Deletes a task from the task list at the specified index.
+     *
+     * @param index Index of the task to be deleted.
+     * @throws TiffyException If the index is invalid.
+     */
+    public void deleteTask(int index) throws TiffyException {
         try {
             UiManager.getInstance().printEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
             this.tasks.remove(index);
             UiManager.getInstance().printTaskCount(this.tasks.size());
         } catch (IndexOutOfBoundsException e) {
-            throw new exception.TiffyException("Invalid index!",
-                    exception.TiffyException.ExceptionType.INVALID_INDEX, e);
+            throw new TiffyException("Invalid index!",
+                    TiffyException.ExceptionType.INVALID_INDEX, e);
         }
     }
 
-    public void addTask(task.Task task) {
+    /**
+     * Adds a new task to the task list.
+     *
+     * @param task The task to be added.
+     */
+    public void addTask(Task task) {
         this.tasks.add(task);
         UiManager.getInstance().printEventFeedback(task, UiManager.eventType.TASK_ADDED);
         UiManager.getInstance().printTaskCount(this.tasks.size());
     }
 
-    public List<task.Task> getTasks() {
+    /**
+     * Returns an unmodifiable view of the task list.
+     *
+     * @return Unmodifiable list of tasks.
+     */
+    public List<Task> getTasks() {
         return Collections.unmodifiableList(this.tasks);
     }
 }

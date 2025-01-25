@@ -13,27 +13,52 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import java.util.stream.Collectors;
-
+import task.Task;
+/**
+ * Manages the saving and loading of task data to and from a JSON file.
+ * Implements a singleton pattern to ensure a single instance of the class.
+ */
 public class DataManager {
+
+    /** File path to the JSON file where task data is stored. */
     private static final String FILE_PATH = "data/Tiffy.json";
+
+    /** Gson instance for serializing and deserializing JSON data. */
     private final Gson gson;
 
+    /**
+     * Private constructor to initialize the Gson instance.
+     */
     private DataManager() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
+    /**
+     * Inner static class for holding the singleton instance of DataManager.
+     */
     private static final class InstanceHolder {
+        /** Singleton instance of DataManager. */
         private static final DataManager instance = new DataManager();
     }
 
+    /**
+     * Returns the singleton instance of DataManager.
+     *
+     * @return Singleton DataManager instance.
+     */
     public static DataManager getInstance() {
         return DataManager.InstanceHolder.instance;
     }
 
-    public void saveTasksToFile(List<task.Task> taskList) {
+    /**
+     * Saves the list of tasks to a JSON file.
+     *
+     * @param taskList List of tasks to be saved.
+     */
+    public void saveTasksToFile(List<Task> taskList) {
         File file = new File(FILE_PATH);
         List<String> stringList = taskList.stream()
-                .map(task.Task::getFormattedTask)
+                .map(Task::getFormattedTask)
                 .collect(Collectors.toList());
         try {
             file.getParentFile().mkdirs();
@@ -46,6 +71,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * Loads the list of tasks from a JSON file.
+     *
+     * @return List of serialized task strings loaded from the file.
+     */
     public List<String> loadTasksFromFile() {
         File file = new File(FILE_PATH);
 
