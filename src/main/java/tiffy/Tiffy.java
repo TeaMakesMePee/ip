@@ -86,6 +86,14 @@ public class Tiffy {
                     UiManager.getInstance().printException(te);
                 }
             }
+            case "find" -> {
+                try {
+                    List<Task> temp = tm.findTasks(partition[1]);
+                    UiManager.getInstance().printTasks(temp);
+                } catch (TiffyException te) {
+                    UiManager.getInstance().printException(te);
+                }
+            }
         }
     }
 }

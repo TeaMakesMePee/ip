@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
 import exception.TiffyException;
-import task.*;
+import task.Task;
+import task.Todo;
+import task.Event;
+import task.Deadline;
 
 /**
  * Manages a collection of tasks, including adding, deleting, and retrieving tasks.
@@ -81,5 +84,18 @@ public class TaskManager {
      */
     public List<Task> getTasks() {
         return Collections.unmodifiableList(this.tasks);
+    }
+
+    public List<Task> findTasks(String keyword) throws exception.TiffyException {
+        List<Task> temp = this.tasks.stream()
+                .filter(x -> x.getDescription()
+                        .contains(keyword))
+                .toList();
+        if (temp.isEmpty()) {
+            throw new exception.TiffyException("Task you're looking for is not found.",
+                    exception.TiffyException.ExceptionType.TASK_NOT_FOUND);
+        }
+        UiManager.getInstance().notifyTaskFound();
+        return temp;
     }
 }

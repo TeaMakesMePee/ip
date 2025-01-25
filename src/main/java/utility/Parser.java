@@ -52,6 +52,13 @@ public class Parser {
             case "delete" -> {
                 return new String[]{"delete", partition[1]};
             }
+            case "find" -> {
+                if (task.isBlank()) {
+                    throw new exception.TiffyException("I'm afraid that's an invalid request.",
+                            exception.TiffyException.ExceptionType.INVALID_INPUT);
+                }
+                return new String[]{"find", task};
+            }
             default -> {
                 throw new TiffyException("I'm afraid that's an invalid request.",
                         TiffyException.ExceptionType.INVALID_INPUT);
