@@ -2,16 +2,19 @@ package task;
 import exception.TiffyException;
 import manager.UiManager;
 
-public abstract class Task {
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public abstract class TestTask {
     protected String description;
     protected boolean isDone;
 
-    public Task(String description) {
+    public TestTask(String description) {
         this.description = description;
         this.isDone = false;
     }
 
-    public Task(String description, boolean isDone) {
+    public TestTask(String description, boolean isDone) {
         this.description = description;
         this.isDone = isDone;
     }
@@ -22,6 +25,7 @@ public abstract class Task {
         return (isDone ? "X" : " "); // mark done task with X
     }
 
+    @Test
     public void markDone(boolean done) throws TiffyException {
         if (this.isDone == done) {
             throw new TiffyException(done ? "Task already marked!" : "Task already marked not done!",
@@ -36,6 +40,7 @@ public abstract class Task {
         return this.description;
     }
 
+    @Test
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.description;
