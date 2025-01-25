@@ -2,9 +2,14 @@ package tiffy;
 
 import java.util.List;
 import java.time.LocalDate;
-import task.*;
+import task.Task;
+import task.Todo;
+import task.Event;
+import task.Deadline;
 import exception.TiffyException;
-import manager.*;
+import manager.TaskManager;
+import manager.UiManager;
+import manager.DataManager;
 import utility.Parser;
 
 public class Tiffy {
