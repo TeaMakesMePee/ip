@@ -86,14 +86,13 @@ public class TaskManager {
         return Collections.unmodifiableList(this.tasks);
     }
 
-    public List<Task> findTasks(String keyword) throws exception.TiffyException {
+    public List<Task> findTasks(String keyword) throws TiffyException {
         List<Task> temp = this.tasks.stream()
-                .filter(x -> x.getDescription()
-                        .contains(keyword))
+                .filter(x -> x.getDescription().contains(keyword))
                 .toList();
         if (temp.isEmpty()) {
-            throw new exception.TiffyException("Task you're looking for is not found.",
-                    exception.TiffyException.ExceptionType.TASK_NOT_FOUND);
+            throw new TiffyException("Task you're looking for is not found.",
+                    TiffyException.ExceptionType.TASK_NOT_FOUND);
         }
         UiManager.getInstance().notifyTaskFound();
         return temp;

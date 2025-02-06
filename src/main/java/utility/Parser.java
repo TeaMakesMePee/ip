@@ -14,7 +14,7 @@ public class Parser {
      */
     public String[] handleRequests(String request) throws TiffyException {
         String[] partition = request.split(" ");
-        String task = request.replaceFirst(partition[0], "");
+        String task = request.replaceFirst(partition[0] + " ", "");
 
         switch (partition[0]) {
             case "list" -> {
