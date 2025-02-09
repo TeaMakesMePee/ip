@@ -40,6 +40,7 @@ public class Tiffy {
     }
 
     public static void markDoneUndone(List<Task> tasks, boolean mark, int index) throws TiffyException {
+        assert index > 0 && index <= tasks.size() : "Invalid task index: " + index;
         try {
             Task temp = tasks.get(index - 1);
             try {
@@ -54,53 +55,55 @@ public class Tiffy {
     }
 
     public static void handleRequests(Parser p, String input, TaskManager tm) throws TiffyException {
+        assert input != null && !input.isBlank() : "Input command cannot be null or empty";
+
         String[] partition = p.handleRequests(input);
         switch (partition[0]) {
-            case "list" -> {
-                if (tm.getTasks().isEmpty()) {
-                    throw new TiffyException("You have no tasks! Add some.",
-                            TiffyException.ExceptionType.ZERO_TASK);
-                }
-                UiManager.getInstance().printTasks(tm.getTasks());
+        case "list" -> {
+            if (tm.getTasks().isEmpty()) {
+                throw new TiffyException("You have no tasks! Add some.",
+                        TiffyException.ExceptionType.ZERO_TASK);
             }
-            case "todo" -> {
-                tm.addTask(new Todo(partition[1]));
+            UiManager.getInstance().printTasks(tm.getTasks());
+        }
+        case "todo" -> {
+            tm.addTask(new Todo(partition[1]));
+        }
+        case "deadline" -> {
+            tm.addTask(new Deadline(partition[1], LocalDate.parse(partition[2])));
+        }
+        case "event" -> {
+            tm.addTask(new Event(partition[1], LocalDate.parse(partition[2]), LocalDate.parse(partition[3])));
+        }
+        case "mark" -> {
+            try {
+                markDoneUndone(tm.getTasks(), true, Integer.parseInt(partition[1]));
+            } catch (TiffyException te) {
+                UiManager.getInstance().printException(te);
             }
-            case "deadline" -> {
-                tm.addTask(new Deadline(partition[1], LocalDate.parse(partition[2])));
+        }
+        case "unmark" -> {
+            try {
+                markDoneUndone(tm.getTasks(), false, Integer.parseInt(partition[1]));
+            } catch (TiffyException te) {
+                UiManager.getInstance().printException(te);
             }
-            case "event" -> {
-                tm.addTask(new Event(partition[1], LocalDate.parse(partition[2]), LocalDate.parse(partition[3])));
+        }
+        case "delete" -> {
+            try {
+                tm.deleteTask(Integer.parseInt(partition[1]) - 1);
+            } catch (TiffyException te) {
+                UiManager.getInstance().printException(te);
             }
-            case "mark" -> {
-                try {
-                    markDoneUndone(tm.getTasks(), true, Integer.parseInt(partition[1]));
-                } catch (TiffyException te) {
-                    UiManager.getInstance().printException(te);
-                }
+        }
+        case "find" -> {
+            try {
+                List<Task> temp = tm.findTasks(partition[1]);
+                UiManager.getInstance().printTasks(temp);
+            } catch (TiffyException te) {
+                UiManager.getInstance().printException(te);
             }
-            case "unmark" -> {
-                try {
-                    markDoneUndone(tm.getTasks(), false, Integer.parseInt(partition[1]));
-                } catch (TiffyException te) {
-                    UiManager.getInstance().printException(te);
-                }
-            }
-            case "delete" -> {
-                try {
-                    tm.deleteTask(Integer.parseInt(partition[1]) - 1);
-                } catch (TiffyException te) {
-                    UiManager.getInstance().printException(te);
-                }
-            }
-            case "find" -> {
-                try {
-                    List<Task> temp = tm.findTasks(partition[1]);
-                    UiManager.getInstance().printTasks(temp);
-                } catch (TiffyException te) {
-                    UiManager.getInstance().printException(te);
-                }
-            }
+        }
         }
     }
 }

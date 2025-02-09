@@ -56,6 +56,8 @@ public class DataManager {
      * @param taskList List of tasks to be saved.
      */
     public void saveTasksToFile(List<Task> taskList) {
+        assert taskList != null : "Task list cannot be null";
+
         File file = new File(FILE_PATH);
         List<String> stringList = taskList.stream()
                 .map(Task::getFormattedTask)

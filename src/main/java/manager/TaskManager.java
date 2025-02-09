@@ -56,6 +56,8 @@ public class TaskManager {
      * @throws TiffyException If the index is invalid.
      */
     public void deleteTask(int index) throws TiffyException {
+        assert index >= 0 && index < tasks.size() : "Invalid task index: " + index;
+
         try {
             UiManager.getInstance().printEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
             this.tasks.remove(index);
@@ -90,10 +92,12 @@ public class TaskManager {
         List<Task> temp = this.tasks.stream()
                 .filter(x -> x.getDescription().contains(keyword))
                 .toList();
+
         if (temp.isEmpty()) {
             throw new TiffyException("Task you're looking for is not found.",
                     TiffyException.ExceptionType.TASK_NOT_FOUND);
         }
+
         UiManager.getInstance().notifyTaskFound();
         return temp;
     }
