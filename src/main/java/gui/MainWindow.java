@@ -23,7 +23,7 @@ public class MainWindow extends AnchorPane {
     private Tiffy tiffy;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/Tiffy.png"));
 
     @FXML
     public void initialize() {
@@ -37,7 +37,7 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     private void handleUserInput() {
-        String input = userInput.getText();
+        String input = "User: " + userInput.getText();
         String response = tiffy.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
