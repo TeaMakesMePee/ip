@@ -28,22 +28,22 @@ public class TaskManager {
             String[] parts = s.split("\\|");
             switch (parts[0]) {
                 case "E" -> {
-                    Event e = new Event(parts[2], parts[1].equals("true"),
+                    Event event = new Event(parts[2], parts[1].equals("true"),
                             java.time.LocalDate.parse(parts[3]), java.time.LocalDate.parse(parts[4]));
-                    this.tasks.add(e);
+                    this.tasks.add(event);
                 }
                 case "D" -> {
                     try {
-                        Deadline d = new Deadline(parts[2], parts[1].equals("true"),
+                        Deadline deadline = new Deadline(parts[2], parts[1].equals("true"),
                                 java.time.LocalDate.parse(parts[3]));
-                        this.tasks.add(d);
+                        this.tasks.add(deadline);
                     } catch (Exception e) {
                         UiManager.getInstance().printException(e);
                     }
                 }
                 case "T" -> {
-                    Todo t = new Todo(parts[2], parts[1].equals("true"));
-                    this.tasks.add(t);
+                    Todo todo = new Todo(parts[2], parts[1].equals("true"));
+                    this.tasks.add(todo);
                 }
             }
         }
@@ -89,16 +89,16 @@ public class TaskManager {
     }
 
     public List<Task> findTasks(String keyword) throws TiffyException {
-        List<Task> temp = this.tasks.stream()
+        List<Task> foundTasks = this.tasks.stream()
                 .filter(x -> x.getDescription().contains(keyword))
                 .toList();
 
-        if (temp.isEmpty()) {
+        if (foundTasks.isEmpty()) {
             throw new TiffyException("Task you're looking for is not found.",
                     TiffyException.ExceptionType.TASK_NOT_FOUND);
         }
 
         UiManager.getInstance().notifyTaskFound();
-        return temp;
+        return foundTasks;
     }
 }

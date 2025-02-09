@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -23,7 +22,7 @@ public class MainWindow extends AnchorPane {
     private Tiffy tiffy;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/Tiffy.png"));
+    private Image tiffyImage = new Image(this.getClass().getResourceAsStream("/images/Tiffy.png"));
 
     @FXML
     public void initialize() {
@@ -31,7 +30,7 @@ public class MainWindow extends AnchorPane {
     }
 
     /** Injects the Duke instance */
-    public void setDuke(Tiffy d) {
+    public void setTiffy(Tiffy d) {
         tiffy = d;
     }
 
@@ -41,7 +40,7 @@ public class MainWindow extends AnchorPane {
         String response = tiffy.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+                DialogBox.getDukeDialog(response, tiffyImage)
         );
         userInput.clear();
     }
