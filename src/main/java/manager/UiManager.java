@@ -4,13 +4,13 @@ import static java.lang.System.in;
 import java.util.Scanner;
 import java.util.List;
 import task.Task;
+import gui.MainWindow;
 
 /**
  * Manages the user interface for interacting with tasks.
  * Provides methods for printing messages, reading commands, and displaying tasks.
  */
 public class UiManager {
-
     /** Enumeration of event types for task-related actions. */
     public enum eventType {
         TASK_MARKED,
@@ -21,6 +21,8 @@ public class UiManager {
 
     /** Scanner object for reading user input. */
     private final Scanner scanner;
+
+    private MainWindow mainWindow;
 
     /**
      * Constructs a UiManager instance and initializes the scanner for input.
@@ -64,13 +66,20 @@ public class UiManager {
                 Hi! I'm Tiffy.
                 What can I do for you?
                 """);
+
+        mainWindow.setOutputMessage(asciiArt);
+        mainWindow.setOutputMessage("""
+                Hi! I'm Tiffy.
+                What can I do for you?
+                """);
     }
 
     /**
      * Prints a goodbye message.
      */
     public void printGoodbyeMessage() {
-        System.out.println("Goodbye!");
+        //System.out.println("Goodbye!");
+        mainWindow.setOutputMessage("Goodbye!");
     }
 
     /**
@@ -79,7 +88,8 @@ public class UiManager {
      * @param e The exception to be printed.
      */
     public void printException(Exception e) {
-        System.err.println(e.getMessage());
+        //System.err.println(e.getMessage());
+        mainWindow.setOutputMessage(e.getMessage());
     }
 
     /**
@@ -115,8 +125,28 @@ public class UiManager {
         System.out.println(task.toString());
     }
 
+    public void generateEventFeedback(Task task, eventType type) {
+        String output = "";
+        switch (type) {
+            case TASK_MARKED -> {
+                output += "Task marked as done:";
+            }
+            case TASK_UNMARKED -> {
+                output += "Task marked as undone:";
+            }
+            case TASK_ADDED -> {
+                output += "Task added:";
+            }
+            case TASK_DELETED -> {
+                output += "Task deleted:";
+            }
+        }
+        mainWindow.setOutputMessage(output + "\n" + task.toString() + "\n");
+    }
+
     public void notifyTaskFound() {
-        System.out.println("Task(s) we found with your query:");
+        //System.out.println("Task(s) we found with your query:");
+        mainWindow.setOutputMessage("Task(s) we found with your query:\n");
     }
 
     /**
@@ -125,9 +155,13 @@ public class UiManager {
      * @param size The number of tasks.
      */
     public void printTaskCount(int size) {
-        System.out.println("You have " + size + " tasks.");
+        mainWindow.setOutputMessage("You have " + size + " tasks.\n");
+        //System.out.println("You have " + size + " tasks.");
     }
 
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
     /**
      * Prints a list of tasks with their indexes.
      *
@@ -135,9 +169,12 @@ public class UiManager {
      */
     public void printTasks(List<Task> tasks) {
         int count = 1;
+        String output = "";
         for (Task task : tasks) {
-            System.out.println(count + "." + task.toString());
+            output += count + ". " + task.toString() + "\n";
+            //System.out.println(count + "." + task.toString());
             count++;
         }
+        mainWindow.setOutputMessage(output);
     }
 }

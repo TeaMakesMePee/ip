@@ -59,6 +59,15 @@ public class Parser {
                 }
                 return new String[]{"find", task};
             }
+            case "contact" -> {
+                if (partition.length == 4) {
+                    return new String[]{partition[0], partition[1], partition[2], partition[3]};
+                }
+                return new String[]{partition[0], partition[1], partition[2]};
+            }
+            case "bye" -> {
+                return new String[]{"bye"};
+            }
             default -> {
                 throw new TiffyException("I'm afraid that's an invalid request.",
                         TiffyException.ExceptionType.INVALID_INPUT);

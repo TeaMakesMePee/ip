@@ -60,6 +60,7 @@ public class TaskManager {
 
         try {
             UiManager.getInstance().printEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
+            UiManager.getInstance().generateEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
             this.tasks.remove(index);
             UiManager.getInstance().printTaskCount(this.tasks.size());
         } catch (IndexOutOfBoundsException e) {
@@ -76,6 +77,7 @@ public class TaskManager {
     public void addTask(Task task) {
         this.tasks.add(task);
         UiManager.getInstance().printEventFeedback(task, UiManager.eventType.TASK_ADDED);
+        UiManager.getInstance().generateEventFeedback(task, UiManager.eventType.TASK_ADDED);
         UiManager.getInstance().printTaskCount(this.tasks.size());
     }
 

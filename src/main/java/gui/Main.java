@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import tiffy.Tiffy;
+import manager.UiManager;
 
 
 public class Main extends Application {
@@ -20,6 +21,7 @@ public class Main extends Application {
             Scene scene = new Scene(anchorPane);
             stage.setScene(scene);
             fxmlLoader.<MainWindow>getController().setTiffy(tiffy);
+            UiManager.getInstance().setMainWindow(fxmlLoader.getController());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

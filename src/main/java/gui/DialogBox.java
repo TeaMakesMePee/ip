@@ -51,8 +51,15 @@ public class DialogBox extends HBox {
         return new DialogBox(text, image);
     }
 
-    public static DialogBox getDukeDialog(String text, Image image) {
+    public static DialogBox getTiffyDialog(String text, Image image) {
         var db = new DialogBox(text, image);
+        db.flip();
+        return db;
+    }
+
+    public static DialogBox getTiffyError(String text, Image image) {
+        var db = new DialogBox(text, image);
+        db.setStyle("-fx-text-fill: red;");
         db.flip();
         return db;
     }

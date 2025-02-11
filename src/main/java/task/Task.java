@@ -73,6 +73,8 @@ public abstract class Task {
                 this,
                 done ? UiManager.eventType.TASK_MARKED : UiManager.eventType.TASK_UNMARKED
         );
+        UiManager.getInstance().generateEventFeedback(this,
+                done ? UiManager.eventType.TASK_MARKED : UiManager.eventType.TASK_UNMARKED);
     }
 
     /**
