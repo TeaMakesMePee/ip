@@ -59,7 +59,7 @@ public class Parser {
     private void validateCommand(String command, String[] arguments) throws TiffyException {
         Set<Integer> validCount = argumentCount.get(command);
         if (!validCount.contains(arguments.length)) {
-            throw new TiffyException("Invalid command syntax.",
+            throw new TiffyException("Invalid syntax for command: " + command,
                     TiffyException.ExceptionType.INVALID_ARGUMENT);
         }
     }

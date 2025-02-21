@@ -191,11 +191,6 @@ public class RequestHandler {
      * @throws TiffyException If the input format is invalid.
      */
     private void handleDeleteEvent(String[] parsedInput) throws TiffyException {
-        if (parsedInput.length != 3) {
-            throw new TiffyException("Invalid input! Try again.",
-                    TiffyException.ExceptionType.INVALID_INPUT);
-        }
-
         switch (parsedInput[1]) {
             case "task" -> taskManager.deleteTask(Integer.parseInt(parsedInput[2]) - 1);
             case "contact" -> contactManager.deleteContact(Integer.parseInt(parsedInput[2]) - 1);
