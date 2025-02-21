@@ -3,6 +3,7 @@ package manager;
 import contacts.Contact;
 import java.util.List;
 import java.util.ArrayList;
+import exception.TiffyException;
 
 public class ContactManager {
     private final List<Contact> contacts;
@@ -23,14 +24,11 @@ public class ContactManager {
         this.contacts.add(contact);
     }
 
-    public void deleteContact(int index) throws exception.TiffyException {
+    public void deleteContact(int index) throws TiffyException {
         assert index >= 0 && index < this.contacts.size() : "Invalid contact index: " + index;
 
         try {
-            //UiManager.getInstance().printEventFeedback(this.contacts.get(index), UiManager.eventType.TASK_DELETED);
-            //UiManager.getInstance().generateEventFeedback(this.contacts.get(index), UiManager.eventType.TASK_DELETED);
             this.contacts.remove(index);
-            //UiManager.getInstance().printTaskCount(this.tasks.size());
         } catch (IndexOutOfBoundsException e) {
             throw new exception.TiffyException("Invalid index!",
                     exception.TiffyException.ExceptionType.INVALID_INDEX, e);

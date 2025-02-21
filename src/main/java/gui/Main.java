@@ -11,7 +11,7 @@ import manager.UiManager;
 
 
 public class Main extends Application {
-    private Tiffy tiffy = new Tiffy();
+    private final Tiffy tiffy = new Tiffy();
 
     @Override
     public void start(Stage stage) {
@@ -20,9 +20,10 @@ public class Main extends Application {
             AnchorPane anchorPane = fxmlLoader.load();
             Scene scene = new Scene(anchorPane);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setTiffy(tiffy);
+            fxmlLoader.<MainWindow>getController().setTiffy(this.tiffy);
             UiManager.getInstance().setMainWindow(fxmlLoader.getController());
             stage.show();
+            this.tiffy.initialize();
         } catch (IOException e) {
             e.printStackTrace();
         }

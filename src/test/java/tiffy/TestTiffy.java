@@ -17,7 +17,7 @@ public class TestTiffy {
 
         Parser parser = new Parser();
 
-        UiManager.getInstance().printStartupMessage();
+        //UiManager.getInstance().printStartupMessage();
         String input = UiManager.getInstance().readCommand();
         while (!input.equals("bye")) {
             try {

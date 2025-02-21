@@ -59,7 +59,7 @@ public class DialogBox extends HBox {
 
     public static DialogBox getTiffyError(String text, Image image) {
         var db = new DialogBox(text, image);
-        db.setStyle("-fx-text-fill: red;");
+        db.dialog.setStyle("-fx-text-fill: red;");
         db.flip();
         return db;
     }

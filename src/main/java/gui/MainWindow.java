@@ -23,11 +23,12 @@ public class MainWindow extends AnchorPane {
     private TextField userInput;
 
     private Tiffy tiffy;
+    private boolean isErrorMessage = false;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image tiffyImage = new Image(this.getClass().getResourceAsStream("/images/Tiffy.png"));
+    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
+    private final Image tiffyImage = new Image(this.getClass().getResourceAsStream("/images/Tiffy.png"));
 
-    private Deque<String> outputBuffer = new LinkedList<>();
+    private final Deque<String> outputBuffer = new LinkedList<>();
 
     @FXML
     public void initialize() {
@@ -36,14 +37,14 @@ public class MainWindow extends AnchorPane {
 
     /** Injects the Duke instance */
     public void setTiffy(Tiffy t) {
-        tiffy = t;
+        this.tiffy = t;
     }
 
     @FXML
     private void handleUserInput() {
-        String input = userInput.getText();
+        String input = this.userInput.getText();
         try {
-            tiffy.handleRequests(input);
+            this.tiffy.handleRequests(input);
         } catch (Exception e) {
             UiManager.getInstance().printException(e);
         }
@@ -52,19 +53,28 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getUserDialog(input, this.userImage)
         );
         flushBuffer();
-        userInput.clear();
+        this.userInput.clear();
     }
 
-    private void flushBuffer() {
-        for (String output : outputBuffer) {
-            dialogContainer.getChildren().addAll(
-                    DialogBox.getTiffyDialog(output, this.tiffyImage)
-            );
+    public void flushBuffer() {
+        StringBuilder finalOutput = new StringBuilder();
+        for (String outputs : this.outputBuffer) {
+            finalOutput.append(outputs);
         }
-        outputBuffer.clear();
+        dialogContainer.getChildren().addAll(
+                this.isErrorMessage ?
+                        DialogBox.getTiffyError(finalOutput.toString(), this.tiffyImage) :
+                        DialogBox.getTiffyDialog(finalOutput.toString(), this.tiffyImage)
+        );
+        this.outputBuffer.clear();
+        this.isErrorMessage = false;
     }
 
     public void setOutputMessage(String outputMessage) {
         this.outputBuffer.add(outputMessage);
+    }
+
+    public void toggleError(boolean isError) {
+        this.isErrorMessage = isError;
     }
 }

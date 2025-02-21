@@ -33,13 +33,9 @@ public class TaskManager {
                     this.tasks.add(event);
                 }
                 case "D" -> {
-                    try {
-                        Deadline deadline = new Deadline(parts[2], parts[1].equals("true"),
-                                java.time.LocalDate.parse(parts[3]));
-                        this.tasks.add(deadline);
-                    } catch (Exception e) {
-                        UiManager.getInstance().printException(e);
-                    }
+                    Deadline deadline = new Deadline(parts[2], parts[1].equals("true"),
+                            java.time.LocalDate.parse(parts[3]));
+                    this.tasks.add(deadline);
                 }
                 case "T" -> {
                     Todo todo = new Todo(parts[2], parts[1].equals("true"));
@@ -59,7 +55,6 @@ public class TaskManager {
         assert index >= 0 && index < tasks.size() : "Invalid task index: " + index;
 
         try {
-            UiManager.getInstance().printEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
             UiManager.getInstance().generateEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
             this.tasks.remove(index);
             UiManager.getInstance().printTaskCount(this.tasks.size());
@@ -76,7 +71,6 @@ public class TaskManager {
      */
     public void addTask(Task task) {
         this.tasks.add(task);
-        UiManager.getInstance().printEventFeedback(task, UiManager.eventType.TASK_ADDED);
         UiManager.getInstance().generateEventFeedback(task, UiManager.eventType.TASK_ADDED);
         UiManager.getInstance().printTaskCount(this.tasks.size());
     }

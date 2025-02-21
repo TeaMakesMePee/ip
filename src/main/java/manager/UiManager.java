@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.util.List;
 import task.Task;
 import gui.MainWindow;
+import contacts.Contact;
 
 /**
  * Manages the user interface for interacting with tasks.
@@ -51,35 +52,12 @@ public class UiManager {
     /**
      * Prints the startup message with ASCII art and a greeting.
      */
-    public void printStartupMessage() {
-        String asciiArt = """
-                 ___________  __     _______   _______  ___  ___\s
-                ("     _   ")|" \\   /"     "| /"     "||"  \\/"  |
-                 )__/  \\\\__/ ||  | (: ______)(: ______) \\   \\  /\s
-                    \\\\_ /    |:  |  \\/    |   \\/    |    \\\\  \\/ \s
-                    |.  |    |.  |  // ___)   // ___)    /   /  \s
-                    \\:  |    /\\  |\\(:  (     (:  (      /   /   \s
-                     \\__|   (__\\_|_)\\__/      \\__/     |___/    \s
-        """;
-        System.out.println(asciiArt);
-        System.out.println("""
-                Hi! I'm Tiffy.
-                What can I do for you?
-                """);
-
-        mainWindow.setOutputMessage(asciiArt);
+    public void greetUser() {
         mainWindow.setOutputMessage("""
                 Hi! I'm Tiffy.
                 What can I do for you?
                 """);
-    }
-
-    /**
-     * Prints a goodbye message.
-     */
-    public void printGoodbyeMessage() {
-        //System.out.println("Goodbye!");
-        mainWindow.setOutputMessage("Goodbye!");
+        mainWindow.flushBuffer();
     }
 
     /**
@@ -88,7 +66,7 @@ public class UiManager {
      * @param e The exception to be printed.
      */
     public void printException(Exception e) {
-        //System.err.println(e.getMessage());
+        mainWindow.toggleError(true);
         mainWindow.setOutputMessage(e.getMessage());
     }
 
@@ -107,24 +85,6 @@ public class UiManager {
      * @param task The task involved in the event.
      * @param type The type of event that occurred.
      */
-    public void printEventFeedback(Task task, eventType type) {
-        switch (type) {
-            case TASK_MARKED -> {
-                System.out.println("Task marked as done:");
-            }
-            case TASK_UNMARKED -> {
-                System.out.println("Task marked as undone:");
-            }
-            case TASK_ADDED -> {
-                System.out.println("Task added:");
-            }
-            case TASK_DELETED -> {
-                System.out.println("Task deleted:");
-            }
-        }
-        System.out.println(task.toString());
-    }
-
     public void generateEventFeedback(Task task, eventType type) {
         String output = "";
         switch (type) {
@@ -145,8 +105,12 @@ public class UiManager {
     }
 
     public void notifyTaskFound() {
-        //System.out.println("Task(s) we found with your query:");
         mainWindow.setOutputMessage("Task(s) we found with your query:\n");
+    }
+
+    public void notifyContactAdded(Contact contact) {
+        mainWindow.setOutputMessage("Contact has been added!\n");
+        mainWindow.setOutputMessage(contact.toString());
     }
 
     /**
@@ -156,7 +120,6 @@ public class UiManager {
      */
     public void printTaskCount(int size) {
         mainWindow.setOutputMessage("You have " + size + " tasks.\n");
-        //System.out.println("You have " + size + " tasks.");
     }
 
     public void setMainWindow(MainWindow mainWindow) {
@@ -169,12 +132,28 @@ public class UiManager {
      */
     public void printTasks(List<Task> tasks) {
         int count = 1;
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (Task task : tasks) {
-            output += count + ". " + task.toString() + "\n";
-            //System.out.println(count + "." + task.toString());
+            output.append(count).append(". ").append(task.toString()).append("\n");
             count++;
         }
-        mainWindow.setOutputMessage(output);
+        mainWindow.setOutputMessage(output.toString());
+    }
+
+    public void printContacts(List<Contact> contacts) {
+        int count = 1;
+        StringBuilder output = new StringBuilder();
+        for (Contact contact : contacts) {
+            output.append(count).append(".\n").append(contact.toString()).append("\n");
+            count++;
+        }
+        mainWindow.setOutputMessage(output.toString());
+    }
+
+    /**
+     * Prints a goodbye message.
+     */
+    public void generateExitMessage() {
+        mainWindow.setOutputMessage("Goodbye!");
     }
 }
