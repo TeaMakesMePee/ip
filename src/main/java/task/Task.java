@@ -70,7 +70,7 @@ public abstract class Task {
         }
         this.isDone = done;
         UiManager.getInstance().generateEventFeedback(this,
-                done ? UiManager.eventType.TASK_MARKED : UiManager.eventType.TASK_UNMARKED);
+                done ? UiManager.EventType.TASK_MARKED : UiManager.EventType.TASK_UNMARKED);
     }
 
     /**

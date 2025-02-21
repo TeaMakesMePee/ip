@@ -13,7 +13,7 @@ import contacts.Contact;
  */
 public class UiManager {
     /** Enumeration of event types for task-related actions. */
-    public enum eventType {
+    public enum EventType {
         TASK_MARKED,
         TASK_UNMARKED,
         TASK_ADDED,
@@ -89,22 +89,13 @@ public class UiManager {
      * @param task The task involved in the event.
      * @param type The type of event that occurred.
      */
-    public void generateEventFeedback(Task task, eventType type) {
-        String output = "";
-        switch (type) {
-            case TASK_MARKED -> {
-                output += "Task marked as done:";
-            }
-            case TASK_UNMARKED -> {
-                output += "Task marked as undone:";
-            }
-            case TASK_ADDED -> {
-                output += "Task added:";
-            }
-            case TASK_DELETED -> {
-                output += "Task deleted:";
-            }
-        }
+    public void generateEventFeedback(Task task, EventType type) {
+        String output = switch (type) {
+            case TASK_MARKED -> "Task marked as done:";
+            case TASK_UNMARKED -> "Task marked as undone:";
+            case TASK_ADDED -> "Task added:";
+            case TASK_DELETED -> "Task deleted:";
+        };
         mainWindow.setOutputMessage(output + "\n" + task.toString() + "\n");
     }
 

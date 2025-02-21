@@ -55,7 +55,7 @@ public class TaskManager {
         assert index >= 0 && index < tasks.size() : "Invalid task index: " + index;
 
         try {
-            UiManager.getInstance().generateEventFeedback(this.tasks.get(index), UiManager.eventType.TASK_DELETED);
+            UiManager.getInstance().generateEventFeedback(this.tasks.get(index), UiManager.EventType.TASK_DELETED);
             this.tasks.remove(index);
             UiManager.getInstance().printTaskCount(this.tasks.size());
         } catch (IndexOutOfBoundsException e) {
@@ -71,7 +71,7 @@ public class TaskManager {
      */
     public void addTask(Task task) {
         this.tasks.add(task);
-        UiManager.getInstance().generateEventFeedback(task, UiManager.eventType.TASK_ADDED);
+        UiManager.getInstance().generateEventFeedback(task, UiManager.EventType.TASK_ADDED);
         UiManager.getInstance().printTaskCount(this.tasks.size());
     }
 

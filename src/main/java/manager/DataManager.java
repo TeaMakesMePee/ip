@@ -23,7 +23,7 @@ import contacts.Contact;
 public class DataManager {
 
     /** File path to the JSON file where task data is stored. */
-    private static final String DATA_FILE_PATH = "data/data_tiffy.json";
+    private static final String TASKS_FILE_PATH = "data/data_tiffy.json";
     private static final String CONTACTS_FILE_PATH = "data/contacts_tiffy.json";
 
     /** Gson instance for serializing and deserializing JSON data. */
@@ -61,7 +61,7 @@ public class DataManager {
     public void saveTasksToFile(List<Task> taskList) {
         assert taskList != null : "Task list cannot be null";
 
-        File file = new File(DATA_FILE_PATH);
+        File file = new File(TASKS_FILE_PATH);
         List<String> stringList = taskList.stream()
                 .map(Task::getFormattedTask)
                 .collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class DataManager {
      * @return List of serialized task strings loaded from the file.
      */
     public List<String> loadTasksFromFile() {
-        File file = new File(DATA_FILE_PATH);
+        File file = new File(TASKS_FILE_PATH);
 
         if (file.exists()) {
             try (Reader reader = new FileReader(file)) {
