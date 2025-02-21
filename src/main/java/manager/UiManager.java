@@ -23,6 +23,10 @@ public class UiManager {
     /** Scanner object for reading user input. */
     private final Scanner scanner;
 
+    /**
+     * Reference to the main application window.
+     * Used for controlling UI interactions.
+     */
     private MainWindow mainWindow;
 
     /**
@@ -104,10 +108,20 @@ public class UiManager {
         mainWindow.setOutputMessage(output + "\n" + task.toString() + "\n");
     }
 
+    /**
+     * Notifies the user that a task matching the query has been found.
+     * Displays a message in the main window.
+     */
     public void notifyTaskFound() {
         mainWindow.setOutputMessage("Task(s) we found with your query:\n");
     }
 
+    /**
+     * Notifies the user that a new contact has been added.
+     * Displays a confirmation message followed by the contact details.
+     *
+     * @param contact The contact that was added.
+     */
     public void notifyContactAdded(Contact contact) {
         mainWindow.setOutputMessage("Contact has been added!\n");
         mainWindow.setOutputMessage(contact.toString());
@@ -122,9 +136,16 @@ public class UiManager {
         mainWindow.setOutputMessage("You have " + size + " tasks.\n");
     }
 
+    /**
+     * Sets the reference to the main application window.
+     * This allows interaction with the UI from this class.
+     *
+     * @param mainWindow The main application window instance.
+     */
     public void setMainWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
     }
+
     /**
      * Prints a list of tasks with their indexes.
      *
@@ -140,13 +161,23 @@ public class UiManager {
         mainWindow.setOutputMessage(output.toString());
     }
 
+    /**
+     * Displays a formatted list of contacts in the main application window.
+     * Each contact is numbered sequentially.
+     *
+     * @param contacts The list of contacts to be displayed.
+     */
     public void printContacts(List<Contact> contacts) {
         int count = 1;
         StringBuilder output = new StringBuilder();
+
+        // Iterate through each contact and format the output
         for (Contact contact : contacts) {
             output.append(count).append(".\n").append(contact.toString()).append("\n");
             count++;
         }
+
+        // Display the formatted contact list in the main window
         mainWindow.setOutputMessage(output.toString());
     }
 

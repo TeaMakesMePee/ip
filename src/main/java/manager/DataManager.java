@@ -76,24 +76,6 @@ public class DataManager {
         }
     }
 
-    public void saveContactsToFile(List<Contact> contactList) {
-        assert contactList != null : "Contact list cannot be null";
-
-        File file = new File(CONTACTS_FILE_PATH);
-        List<String> stringList = contactList.stream()
-                .map(Contact::getFormattedContact)
-                .collect(Collectors.toList());
-        try {
-            file.getParentFile().mkdirs();
-
-            try (Writer writer = new FileWriter(file)) {
-                gson.toJson(stringList, writer);
-            }
-        } catch (IOException e) {
-            System.err.println("Error saving strings: " + e.getMessage());
-        }
-    }
-
     /**
      * Loads the list of tasks from a JSON file.
      *
@@ -114,9 +96,43 @@ public class DataManager {
         return new ArrayList<>();
     }
 
+    /**
+     * Saves the given list of contacts to a file in JSON format.
+     *
+     * @param contactList The list of contacts to be saved.
+     * @throws AssertionError If the provided contact list is null.
+     */
+    public void saveContactsToFile(List<Contact> contactList) {
+        assert contactList != null : "Contact list cannot be null";
+
+        File file = new File(CONTACTS_FILE_PATH);
+        List<String> stringList = contactList.stream()
+                .map(Contact::getFormattedContact)
+                .collect(Collectors.toList());
+        try {
+            // Ensure the parent directory exists before writing the file
+            file.getParentFile().mkdirs();
+
+            // Write the contact list as JSON to the file
+            try (Writer writer = new FileWriter(file)) {
+                gson.toJson(stringList, writer);
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving strings: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads the contact list from a file if it exists.
+     * The contacts are stored as JSON and parsed into a list of strings.
+     *
+     * @return A list of contact strings. If the file does not exist or
+     *         an error occurs, an empty list is returned.
+     */
     public List<String> loadContactsFromFile() {
         File file = new File(CONTACTS_FILE_PATH);
 
+        // Check if the contacts file exists before attempting to read
         if (file.exists()) {
             try (Reader reader = new FileReader(file)) {
                 Type listType = new TypeToken<List<String>>() {}.getType();
@@ -126,6 +142,8 @@ public class DataManager {
             }
         }
 
+        // Return an empty list if the file does not exist or fails to load
         return new ArrayList<>();
     }
+
 }
