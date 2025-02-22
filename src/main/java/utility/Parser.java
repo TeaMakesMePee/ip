@@ -77,7 +77,7 @@ public class Parser {
             mergedStringArgument = String.join(" ",
                     Arrays.copyOfRange(splitRequest, 1, splitRequest.length));
         }
-        validateCommand(splitRequest[0], splitRequest);
+        validateCommand(splitRequest[0], new String[]{"todo", mergedStringArgument});
         return new String[]{splitRequest[0], mergedStringArgument};
     }
 
