@@ -49,6 +49,7 @@ public class ContactManager {
         assert index >= 0 && index < this.contacts.size() : "Invalid contact index: " + index;
 
         try {
+            UiManager.getInstance().generateEventFeedback(this.contacts.get(index), UiManager.EventType.CONTACT_DELETED);
             this.contacts.remove(index);
         } catch (IndexOutOfBoundsException e) {
             throw new TiffyException("Invalid index!",
