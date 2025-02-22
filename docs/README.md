@@ -1,7 +1,7 @@
 # Tiffy User Guide
 
 
-![img.png](img.png)
+![Ui.png](img.png)
 
 Tiffy is a friendly chat bot that manages your tasks and contacts.  
 You may directly paste the examples line by line for ease of testing.
