@@ -25,7 +25,7 @@ public class MainWindow extends AnchorPane {
     private Tiffy tiffy;
     private boolean isErrorMessage = false;
 
-    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
+    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/EpicFace.png"));
     private final Image tiffyImage = new Image(this.getClass().getResourceAsStream("/images/Tiffy.png"));
 
     private final Deque<String> outputBuffer = new LinkedList<>();
