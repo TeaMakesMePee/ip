@@ -18,6 +18,7 @@ public class UiManager {
         TASK_UNMARKED,
         TASK_ADDED,
         TASK_DELETED,
+        CONTACT_DELETED,
     }
 
     /** Scanner object for reading user input. */
@@ -89,14 +90,15 @@ public class UiManager {
      * @param task The task involved in the event.
      * @param type The type of event that occurred.
      */
-    public void generateEventFeedback(Task task, EventType type) {
+    public void generateEventFeedback(Object obj, EventType type) {
         String output = switch (type) {
             case TASK_MARKED -> "Task marked as done:";
             case TASK_UNMARKED -> "Task marked as undone:";
             case TASK_ADDED -> "Task added:";
             case TASK_DELETED -> "Task deleted:";
+            case CONTACT_DELETED -> "Contact deleted:";
         };
-        mainWindow.setOutputMessage(output + "\n" + task.toString() + "\n");
+        mainWindow.setOutputMessage(output + "\n" + obj.toString() + "\n");
     }
 
     /**
