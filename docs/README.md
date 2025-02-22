@@ -3,7 +3,8 @@
 
 ![img.png](img.png)
 
-Tiffy is a friendly chat bot that manages your tasks and contacts.
+Tiffy is a friendly chat bot that manages your tasks and contacts.  
+You may directly paste the examples line by line for ease of testing.
 
 
 ## Adding Todo Tasks
