@@ -22,6 +22,7 @@ public class Main extends Application {
             stage.setScene(scene);
             fxmlLoader.<MainWindow>getController().setTiffy(this.tiffy);
             UiManager.getInstance().setMainWindow(fxmlLoader.getController());
+            stage.setTitle("Tiffy");
             stage.show();
             this.tiffy.initialize();
         } catch (IOException e) {

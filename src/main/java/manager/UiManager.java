@@ -87,7 +87,7 @@ public class UiManager {
     /**
      * Prints feedback to the user about a task-related event.
      *
-     * @param task The task involved in the event.
+     * @param obj The object involved in the event.
      * @param type The type of event that occurred.
      */
     public void generateEventFeedback(Object obj, EventType type) {
